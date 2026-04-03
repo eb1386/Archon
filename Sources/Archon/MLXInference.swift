@@ -38,14 +38,14 @@ class MLXInference {
             throw ArchonError.modelNotLoaded
         }
 
-        let messages: [[String: String]] = [
+        let messages: [[String: Any]] = [
             ["role": "system", "content": systemPrompt],
             ["role": "user", "content": userPrompt]
         ]
 
         let limit = maxTokens
         let result = try await container.perform { ctx in
-            let input = try await ctx.processor.prepare(input: .init(messages: messages))
+            let input = try await ctx.processor.prepare(input: .init(prompt: .messages(messages)))
             var count = 0
             return try MLXLMCommon.generate(
                 input: input,
