@@ -58,7 +58,11 @@ func boot() async {
     print("[+] listening\n")
 
     listener.onTranscription = { text in
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        var trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        // whisper sometimes outputs [BLANK_AUDIO], (silence), etc
+        if trimmed.hasPrefix("[") || trimmed.hasPrefix("(") { return }
+        // strip leading/trailing punctuation whisper likes to add
+        trimmed = trimmed.trimmingCharacters(in: CharacterSet.punctuationCharacters.union(.whitespaces))
         if trimmed.count < 3 { return }
         if junkPhrases.contains(trimmed.lowercased()) { return }
 
