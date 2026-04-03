@@ -1,7 +1,6 @@
 .build/
 .swiftpm/
 Libraries/whisper/lib/
-Libraries/whisper/include/whisper.h
 Libraries/whisper/include/ggml*.h
 *.o
 *.a

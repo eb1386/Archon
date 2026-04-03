@@ -3,10 +3,11 @@ import PackageDescription
 
 let package = Package(
     name: "Archon",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/ml-explore/mlx-swift", from: "0.18.0"),
-        .package(url: "https://github.com/ml-explore/mlx-swift-examples", branch: "main"),
+        // pinned to last versions that work with swift 5.9 / xcode 15
+        .package(url: "https://github.com/ml-explore/mlx-swift", exact: "0.21.2"),
+        .package(url: "https://github.com/ml-explore/mlx-swift-examples", exact: "2.21.2"),
         .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.16.0"),
     ],
     targets: [

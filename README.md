@@ -6,13 +6,15 @@ replaces keyboard/mouse with speech for common tasks — opening apps, clicking 
 
 ## requirements
 
-- macOS 13+ (Ventura or later)
+- macOS 14+ (Sonoma or later)
 - Apple Silicon (M1, M2, M3, M4)
+- Xcode 15+ Command Line Tools
 - ~6GB free disk space
 - 8GB RAM minimum (16GB recommended)
 
 ## setup
 
+first time:
 ```bash
 git clone https://github.com/eb1386/Archon.git
 cd Archon
@@ -20,7 +22,14 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-setup.sh handles everything automatically:
+already cloned? just re-run setup — it skips what's already downloaded:
+```bash
+cd Archon
+git pull
+./setup.sh
+```
+
+setup.sh handles everything automatically and skips steps that are already done:
 - installs homebrew, cmake, git-lfs if you don't have them
 - clones and compiles whisper.cpp as a static library
 - downloads the whisper base.en model (~150MB)

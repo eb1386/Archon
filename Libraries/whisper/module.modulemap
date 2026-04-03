@@ -1,5 +1,5 @@
 module CWhisper {
-    header "whisper.h"
+    header "include/whisper.h"
     link "whisper"
     export *
 }
