@@ -27,19 +27,18 @@ class MLXInference {
             ["role": "user", "content": userPrompt]
         ]
 
-        let input = try await container.perform { ctx in
-            try await ctx.processor.prepare(input: .init(messages: messages))
-        }
-
-        var tokenCount = 0
+        // do everything in one perform call so we don't need LMInput to cross sendable boundaries
+        let limit = maxTokens
         let result = try await container.perform { ctx in
-            try MLXLMCommon.generate(
+            let input = try await ctx.processor.prepare(input: .init(messages: messages))
+            var count = 0
+            return try MLXLMCommon.generate(
                 input: input,
                 parameters: .init(temperature: 0.1, topP: 0.9, repetitionPenalty: 1.1),
                 context: ctx
             ) { newTokens in
-                tokenCount += newTokens.count
-                return tokenCount >= maxTokens ? .stop : .more
+                count += newTokens.count
+                return count >= limit ? .stop : .more
             }
         }
 
