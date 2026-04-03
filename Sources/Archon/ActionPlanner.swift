@@ -58,10 +58,13 @@ User: "turn up the volume"
     // some models can't resist wrapping in code fences
     private func stripMarkdownFences(_ s: String) -> String {
         var out = s.trimmingCharacters(in: .whitespacesAndNewlines)
+        // handle ```json\n...\n``` or ```\n...\n```
         if out.hasPrefix("```") {
-            // drop first line (```json or ```)
             if let nl = out.firstIndex(of: "\n") {
                 out = String(out[out.index(after: nl)...])
+            } else {
+                // edge case: everything on one line like ```[...]```
+                out = String(out.dropFirst(3))
             }
         }
         if out.hasSuffix("```") {
