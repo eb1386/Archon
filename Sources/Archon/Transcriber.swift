@@ -33,7 +33,7 @@ class Transcriber {
 
         // 0 = WHISPER_SAMPLING_GREEDY
         var p = whisper_full_default_params(0)
-        p.n_threads = min(4, Int32(ProcessInfo.processInfo.activeProcessorCount))
+        p.n_threads = Int32(min(4, ProcessInfo.processInfo.activeProcessorCount))
         p.single_segment = true
         p.no_timestamps = true
         p.print_special = false

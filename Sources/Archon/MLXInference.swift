@@ -31,23 +31,18 @@ class MLXInference {
             try await ctx.processor.prepare(input: .init(messages: messages))
         }
 
-        var allTokens: [Int] = []
-
+        var tokenCount = 0
         let result = try await container.perform { ctx in
             try MLXLMCommon.generate(
                 input: input,
                 parameters: .init(temperature: 0.1, topP: 0.9, repetitionPenalty: 1.1),
                 context: ctx
             ) { newTokens in
-                allTokens.append(contentsOf: newTokens)
-                return allTokens.count >= maxTokens ? .stop : .more
+                tokenCount += newTokens.count
+                return tokenCount >= maxTokens ? .stop : .more
             }
         }
 
-        // use the result's output if available, fall back to manual decode
-        let text = result.output ?? (try await container.perform { ctx in
-            ctx.tokenizer.decode(tokens: allTokens)
-        })
-        return text
+        return result.output
     }
 }
