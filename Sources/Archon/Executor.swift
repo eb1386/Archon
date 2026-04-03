@@ -169,13 +169,15 @@ class Executor {
     // MARK: - scroll
 
     private func doScroll(_ direction: String, amount: Int) {
+        // 40px per unit feels right on retina — 10 was way too small
+        let step = amount * 40
         var dy: Int32 = 0, dx: Int32 = 0
         switch direction.lowercased() {
-        case "up":    dy = Int32(amount * 10)
-        case "down":  dy = Int32(-amount * 10)
-        case "left":  dx = Int32(amount * 10)
-        case "right": dx = Int32(-amount * 10)
-        default:      dy = Int32(-amount * 10)
+        case "up":    dy = Int32(step)
+        case "down":  dy = Int32(-step)
+        case "left":  dx = Int32(step)
+        case "right": dx = Int32(-step)
+        default:      dy = Int32(-step)
         }
         if let ev = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2, wheel1: dy, wheel2: dx) {
             ev.post(tap: .cghidEventTap)
