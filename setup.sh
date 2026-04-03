@@ -136,12 +136,14 @@ else
     info "VAD model already exists"
 fi
 
-# download qwen llm
-if [[ ! -d "$MODELS_DIR/qwen2.5-3b-instruct-4bit" ]]; then
-    info "Downloading Qwen2.5-3B-Instruct-4bit (~2.5GB)..."
+# download qwen llm — use 0.5B for max compatibility with older mlx-swift
+if [[ ! -d "$MODELS_DIR/qwen2.5-0.5b-instruct-4bit" ]]; then
+    info "Downloading Qwen2.5-0.5B-Instruct-4bit (~400MB)..."
     git lfs install
-    git clone "https://huggingface.co/mlx-community/Qwen2.5-3B-Instruct-4bit" \
-        "$MODELS_DIR/qwen2.5-3b-instruct-4bit"
+    git clone "https://huggingface.co/mlx-community/Qwen2.5-0.5B-Instruct-4bit" \
+        "$MODELS_DIR/qwen2.5-0.5b-instruct-4bit"
+    # remove index file — can confuse older mlx versions
+    rm -f "$MODELS_DIR/qwen2.5-0.5b-instruct-4bit/model.safetensors.index.json"
     info "LLM model downloaded"
 else
     info "LLM model already exists"
@@ -154,7 +156,7 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
 {
     "whisper_model_path": "~/.archon/models/ggml-base.en.bin",
     "vad_model_path": "~/.archon/models/silero_vad.onnx",
-    "llm_model_path": "~/.archon/models/qwen2.5-3b-instruct-4bit",
+    "llm_model_path": "~/.archon/models/qwen2.5-0.5b-instruct-4bit",
     "wake_word": null,
     "always_listening": true,
     "action_delay_ms": 100,

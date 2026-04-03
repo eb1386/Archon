@@ -13,8 +13,24 @@ class MLXInference {
 
     func load() async throws {
         let url = URL(fileURLWithPath: modelPath)
+
+        // check the dir actually exists
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: modelPath, isDirectory: &isDir), isDir.boolValue else {
+            print("[!] model dir not found: \(modelPath)")
+            throw ArchonError.modelNotLoaded
+        }
+
+        // nuke the index file — older mlx chokes on it
+        let indexPath = url.appendingPathComponent("model.safetensors.index.json").path
+        if FileManager.default.fileExists(atPath: indexPath) {
+            try? FileManager.default.removeItem(atPath: indexPath)
+        }
+
         let config = ModelConfiguration(directory: url)
-        container = try await LLMModelFactory.shared.loadContainer(configuration: config)
+        container = try await LLMModelFactory.shared.loadContainer(configuration: config) { progress in
+            // silence download progress
+        }
     }
 
     func generate(systemPrompt: String, userPrompt: String, maxTokens: Int = 512) async throws -> String {
@@ -27,7 +43,6 @@ class MLXInference {
             ["role": "user", "content": userPrompt]
         ]
 
-        // do everything in one perform call so we don't need LMInput to cross sendable boundaries
         let limit = maxTokens
         let result = try await container.perform { ctx in
             let input = try await ctx.processor.prepare(input: .init(messages: messages))

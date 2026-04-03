@@ -96,7 +96,7 @@ edit `~/.archon/config.json`:
 {
     "whisper_model_path": "~/.archon/models/ggml-base.en.bin",
     "vad_model_path": "~/.archon/models/silero_vad.onnx",
-    "llm_model_path": "~/.archon/models/qwen2.5-3b-instruct-4bit",
+    "llm_model_path": "~/.archon/models/qwen2.5-0.5b-instruct-4bit",
     "wake_word": null,
     "always_listening": true,
     "action_delay_ms": 100,
