@@ -71,9 +71,14 @@ struct ActionParser {
         case "click":
             return .click(target: try req(d, "target"))
         case "click_coordinates":
-            guard let x = d["x"] as? Int, let y = d["y"] as? Int else {
-                throw ArchonError.invalidActionJSON("click_coordinates needs x and y")
-            }
+            // JSON numbers can arrive as Int or Double
+            let x: Int, y: Int
+            if let xi = d["x"] as? Int { x = xi }
+            else if let xd = d["x"] as? Double { x = Int(xd) }
+            else { throw ArchonError.invalidActionJSON("click_coordinates needs x") }
+            if let yi = d["y"] as? Int { y = yi }
+            else if let yd = d["y"] as? Double { y = Int(yd) }
+            else { throw ArchonError.invalidActionJSON("click_coordinates needs y") }
             return .clickCoordinates(x: x, y: y)
         case "scroll":
             return .scroll(
