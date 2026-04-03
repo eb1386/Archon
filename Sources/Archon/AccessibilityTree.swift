@@ -16,9 +16,13 @@ class AccessibilityTree {
     }
 
     private static func walk(_ el: AXUIElement, into results: inout [Element], depth: Int) {
-        if depth > 15 { return } // don't go too deep
+        if depth > 15 { return }
+        // bail early if we can't even read the role (e.g., protected apps)
+        var check: CFTypeRef?
+        let canRead = AXUIElementCopyAttributeValue(el, kAXRoleAttribute as CFString, &check)
+        if canRead == .cannotComplete || canRead == .notImplemented { return }
 
-        let role = axString(el, kAXRoleAttribute)
+        let role = (check as? String) ?? ""
         let title = axString(el, kAXTitleAttribute)
         let desc = axString(el, kAXDescriptionAttribute)
         let value = axString(el, kAXValueAttribute)
