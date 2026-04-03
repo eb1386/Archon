@@ -5,17 +5,16 @@ class VAD {
     private var session: ORTSession?
     private var env: ORTEnv?
     let threshold: Float
+    private let stateSize = 2 * 1 * 64 // layers * batch * hidden
 
-    // recurrent state for silero
     private var hState: [Float]
     private var cState: [Float]
     private let sr: Int = 16000
 
     init(modelPath: String, threshold: Float = 0.5) {
         self.threshold = threshold
-        // 2 layers, 1 batch, 64 hidden
-        self.hState = [Float](repeating: 0, count: 128)
-        self.cState = [Float](repeating: 0, count: 128)
+        self.hState = [Float](repeating: 0, count: stateSize)
+        self.cState = [Float](repeating: 0, count: stateSize)
 
         let resolved = Config.expandPath(modelPath)
         do {
@@ -81,7 +80,7 @@ class VAD {
     }
 
     func reset() {
-        hState = [Float](repeating: 0, count: 128)
-        cState = [Float](repeating: 0, count: 128)
+        hState = [Float](repeating: 0, count: stateSize)
+        cState = [Float](repeating: 0, count: stateSize)
     }
 }
