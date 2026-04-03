@@ -1,0 +1,30 @@
+ARCHON SETUP
+============
+
+needs: macOS 13+, apple silicon, xcode CLI tools, ~6GB disk
+
+automatic:
+  chmod +x setup.sh
+  ./setup.sh
+
+manual:
+  1. brew install cmake git-lfs
+  2. mkdir -p ~/.archon/models
+  3. curl -L -o ~/.archon/models/ggml-base.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin
+  4. curl -L -o ~/.archon/models/silero_vad.onnx https://github.com/snakers4/silero-vad/raw/master/src/silero_vad/data/silero_vad.onnx
+  5. git lfs install && git clone https://huggingface.co/mlx-community/Qwen2.5-3B-Instruct-4bit ~/.archon/models/qwen2.5-3b-instruct-4bit
+  6. build whisper.cpp (see setup.sh for cmake flags), copy libwhisper.a + headers into Libraries/whisper/
+  7. swift build -c release
+  8. grant accessibility + microphone in system settings
+  9. .build/release/Archon
+
+config: ~/.archon/config.json
+  wake_word          - set to "archon" or null (null = always active)
+  action_delay_ms    - pause between actions (default 100)
+  tts_enabled        - spoken confirmations (default false)
+  vad_threshold      - speech detection sensitivity (default 0.5)
+  silence_duration_ms - how long to wait after speech stops (default 500)
+  max_actions_per_command - safety cap (default 20)
+
+low memory (8GB):
+  use Qwen2.5-1.5B-Instruct-4bit instead of 3B. see README.
