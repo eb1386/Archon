@@ -47,7 +47,6 @@ func boot() async {
         silenceDurationMs: config.silenceDurationMs
     )
 
-    // whisper loves to hallucinate these on silence/noise
     let junkPhrases: Set<String> = [
         "thank you", "thanks for watching", "subscribe",
         "you", "bye", "", "the", "a", "i", "it", "is",
@@ -55,46 +54,52 @@ func boot() async {
         "please subscribe", "like and subscribe",
     ]
 
+    // snapshot config values we need inside the task
+    let wakeWord = config.wakeWord
+    let logTranscriptions = config.logTranscriptions
+    let logActions = config.logActions
+    let maxActions = config.maxActionsPerCommand
+    let delayMs = config.actionDelayMs
+    let ttsOn = config.ttsEnabled
+
     print("[+] listening\n")
 
     listener.onTranscription = { text in
         var trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        // whisper sometimes outputs [BLANK_AUDIO], (silence), etc
         if trimmed.hasPrefix("[") || trimmed.hasPrefix("(") { return }
-        // strip leading/trailing punctuation whisper likes to add
         trimmed = trimmed.trimmingCharacters(in: CharacterSet.punctuationCharacters.union(.whitespaces))
         if trimmed.count < 3 { return }
         if junkPhrases.contains(trimmed.lowercased()) { return }
 
-        if let wake = config.wakeWord {
+        if let wake = wakeWord {
             guard trimmed.lowercased().hasPrefix(wake.lowercased()) else { return }
         }
 
-        if config.logTranscriptions {
+        if logTranscriptions {
             print("heard: \"\(trimmed)\"")
         }
 
-        let command = trimmed // capture as let for sendable
-        Task {
+        let command = trimmed
+        Task { @MainActor in
             do {
                 let actions = try await planner.plan(command: command)
-                let capped = Array(actions.prefix(config.maxActionsPerCommand))
+                let capped = Array(actions.prefix(maxActions))
 
-                if config.logActions {
+                if logActions {
                     print("  \(capped.count) action(s)")
                 }
 
                 for (i, action) in capped.enumerated() {
-                    if config.logActions {
+                    if logActions {
                         print("  [\(i + 1)] \(action)")
                     }
                     try await executor.execute(action)
-                    if config.actionDelayMs > 0 {
-                        try await Task.sleep(nanoseconds: UInt64(config.actionDelayMs) * 1_000_000)
+                    if delayMs > 0 {
+                        try await Task.sleep(nanoseconds: UInt64(delayMs) * 1_000_000)
                     }
                 }
 
-                if config.ttsEnabled {
+                if ttsOn {
                     TTSFeedback.speak("Done")
                 }
                 print("  done\n")

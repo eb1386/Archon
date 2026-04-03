@@ -4,7 +4,6 @@ import CWhisper
 class Transcriber {
     private var ctx: OpaquePointer?
     private let modelPath: String
-    // keep this alive so we don't strdup every call
     private let langPtr: UnsafeMutablePointer<CChar>
 
     init(modelPath: String) {
@@ -31,7 +30,7 @@ class Transcriber {
 
         let t0 = CFAbsoluteTimeGetCurrent()
 
-        var p = whisper_full_default_params(whisper_sampling_strategy(rawValue: 0))
+        var p = whisper_full_default_params(WHISPER_SAMPLING_GREEDY)
         p.n_threads = Int32(min(4, ProcessInfo.processInfo.activeProcessorCount))
         p.single_segment = true
         p.no_timestamps = true

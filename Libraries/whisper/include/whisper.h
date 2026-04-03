@@ -13,6 +13,11 @@ extern "C" {
 struct whisper_context;
 struct whisper_state;
 
+enum whisper_sampling_strategy {
+    WHISPER_SAMPLING_GREEDY = 0,
+    WHISPER_SAMPLING_BEAM_SEARCH = 1,
+};
+
 struct whisper_context_params {
     bool use_gpu;
     int gpu_device;
@@ -75,7 +80,7 @@ struct whisper_full_params {
 typedef struct whisper_context * whisper_context_ptr;
 
 struct whisper_context_params whisper_context_default_params(void);
-struct whisper_full_params whisper_full_default_params(int strategy);
+struct whisper_full_params whisper_full_default_params(enum whisper_sampling_strategy strategy);
 
 struct whisper_context * whisper_init_from_file_with_params(
     const char * path_model,

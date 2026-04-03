@@ -48,7 +48,7 @@ class Executor {
         if let running = ws.runningApplications.first(where: {
             $0.localizedName?.lowercased() == name.lowercased()
         }) {
-            running.activate()
+            running.activate(options: [])
             return
         }
 
