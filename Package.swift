@@ -5,8 +5,8 @@ let package = Package(
     name: "Archon",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/ml-explore/mlx-swift", exact: "0.29.1"),
-        .package(url: "https://github.com/ml-explore/mlx-swift-examples", exact: "2.29.1"),
+        .package(url: "https://github.com/ml-explore/mlx-swift", exact: "0.25.5"),
+        .package(url: "https://github.com/ml-explore/mlx-swift-examples", exact: "2.25.7"),
         .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.16.0"),
     ],
     targets: [

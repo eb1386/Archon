@@ -45,7 +45,7 @@ class MLXInference {
 
         let limit = maxTokens
         let result = try await container.perform { ctx in
-            let input = try await ctx.processor.prepare(input: .init(prompt: .messages(messages)))
+            let input = try await ctx.processor.prepare(input: .init(messages: messages))
             var count = 0
             return try MLXLMCommon.generate(
                 input: input,
