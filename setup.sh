@@ -75,24 +75,28 @@ if [[ ! -f "$WHISPER_LIB_DIR/lib/libwhisper.a" ]]; then
     git clone --depth 1 https://github.com/ggerganov/whisper.cpp.git
     cd whisper.cpp
     cmake -B build \
-        -DWHISPER_COREML=ON \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_SHARED_LIBS=OFF \
         -DWHISPER_BUILD_EXAMPLES=OFF \
         -DWHISPER_BUILD_TESTS=OFF
     cmake --build build --config Release -j$(sysctl -n hw.ncpu)
 
-    # copy library
-    cp build/src/libwhisper.a "$WHISPER_LIB_DIR/lib/" 2>/dev/null || \
-    cp build/libwhisper.a "$WHISPER_LIB_DIR/lib/" 2>/dev/null || \
-    find build -name "libwhisper.a" -exec cp {} "$WHISPER_LIB_DIR/lib/" \;
+    # the lib can end up in different places depending on version
+    FOUND_LIB=$(find build -name "libwhisper.a" -print -quit)
+    if [[ -z "$FOUND_LIB" ]]; then
+        fail "whisper.cpp build succeeded but can't find libwhisper.a"
+    fi
+    cp "$FOUND_LIB" "$WHISPER_LIB_DIR/lib/"
 
-    # copy headers
-    cp include/whisper.h "$WHISPER_LIB_DIR/include/" 2>/dev/null || \
-    cp whisper.h "$WHISPER_LIB_DIR/include/" 2>/dev/null || true
-
-    # copy ggml headers if present
-    find . -name "ggml*.h" -path "*/include/*" -exec cp {} "$WHISPER_LIB_DIR/include/" \; 2>/dev/null || true
+    # headers — try common locations
+    for hdir in include ggml/include; do
+        if [[ -f "$hdir/whisper.h" ]]; then
+            cp "$hdir/whisper.h" "$WHISPER_LIB_DIR/include/"
+            break
+        fi
+    done
+    # grab ggml headers too if they exist
+    find . -maxdepth 3 -name "ggml*.h" -path "*/include/*" -exec cp {} "$WHISPER_LIB_DIR/include/" \; 2>/dev/null || true
 
     cd "$SCRIPT_DIR"
     rm -rf "$WHISPER_TMP"
