@@ -74,9 +74,10 @@ func boot() async {
             print("heard: \"\(trimmed)\"")
         }
 
+        let command = trimmed // capture as let for sendable
         Task {
             do {
-                let actions = try await planner.plan(command: trimmed)
+                let actions = try await planner.plan(command: command)
                 let capped = Array(actions.prefix(config.maxActionsPerCommand))
 
                 if config.logActions {

@@ -48,7 +48,7 @@ class Executor {
         if let running = ws.runningApplications.first(where: {
             $0.localizedName?.lowercased() == name.lowercased()
         }) {
-            running.activate(options: .activateIgnoringOtherApps)
+            running.activate()
             return
         }
 
@@ -179,8 +179,8 @@ class Executor {
         case "right": dx = Int32(-step)
         default:      dy = Int32(-step)
         }
-        if let ev = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2, wheel1: dy, wheel2: dx) {
-            ev.post(tap: .cghidEventTap)
+        if let ev = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2, wheel1: dy, wheel2: dx, wheel3: 0) {
+            ev.post(tap: .cgSessionEventTap)
         }
     }
 
