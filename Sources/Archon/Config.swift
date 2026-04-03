@@ -75,6 +75,9 @@ struct Config: Codable {
         let enc = JSONEncoder()
         enc.outputFormatting = [.prettyPrinted, .sortedKeys]
         guard let data = try? enc.encode(self) else { return }
+        // make sure ~/.archon/ exists
+        let dir = (Config.configPath as NSString).deletingLastPathComponent
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
         FileManager.default.createFile(atPath: Config.configPath, contents: data)
     }
 
