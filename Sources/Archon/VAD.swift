@@ -1,7 +1,7 @@
 import Foundation
 import OnnxRuntimeBindings
 
-class VAD {
+class VAD: @unchecked Sendable {
     private var session: ORTSession?
     private var env: ORTEnv?
     let threshold: Float

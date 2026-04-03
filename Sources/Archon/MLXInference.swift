@@ -3,7 +3,7 @@ import MLX
 import MLXLLM
 import MLXLMCommon
 
-class MLXInference {
+class MLXInference: @unchecked Sendable {
     private var container: ModelContainer?
     private let modelPath: String
 
@@ -14,23 +14,14 @@ class MLXInference {
     func load() async throws {
         let url = URL(fileURLWithPath: modelPath)
 
-        // check the dir actually exists
         var isDir: ObjCBool = false
         guard FileManager.default.fileExists(atPath: modelPath, isDirectory: &isDir), isDir.boolValue else {
             print("[!] model dir not found: \(modelPath)")
             throw ArchonError.modelNotLoaded
         }
 
-        // nuke the index file — older mlx chokes on it
-        let indexPath = url.appendingPathComponent("model.safetensors.index.json").path
-        if FileManager.default.fileExists(atPath: indexPath) {
-            try? FileManager.default.removeItem(atPath: indexPath)
-        }
-
         let config = ModelConfiguration(directory: url)
-        container = try await LLMModelFactory.shared.loadContainer(configuration: config) { progress in
-            // silence download progress
-        }
+        container = try await LLMModelFactory.shared.loadContainer(configuration: config) { _ in }
     }
 
     func generate(systemPrompt: String, userPrompt: String, maxTokens: Int = 512) async throws -> String {
@@ -38,7 +29,7 @@ class MLXInference {
             throw ArchonError.modelNotLoaded
         }
 
-        let messages: [[String: String]] = [
+        let messages: [[String: Any]] = [
             ["role": "system", "content": systemPrompt],
             ["role": "user", "content": userPrompt]
         ]

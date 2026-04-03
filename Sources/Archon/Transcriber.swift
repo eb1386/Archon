@@ -1,7 +1,7 @@
 import Foundation
 import CWhisper
 
-class Transcriber {
+class Transcriber: @unchecked Sendable {
     private var ctx: OpaquePointer?
     private let modelPath: String
     private let langPtr: UnsafeMutablePointer<CChar>

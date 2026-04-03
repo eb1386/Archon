@@ -1,6 +1,6 @@
 import Foundation
 
-class ActionPlanner {
+class ActionPlanner: @unchecked Sendable {
     private let llm: MLXInference
 
     // this is long but the model needs explicit examples to stay on track

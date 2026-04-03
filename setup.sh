@@ -136,13 +136,12 @@ else
     info "VAD model already exists"
 fi
 
-# download llama 3.2 3b — works reliably with mlx-swift 0.21.x
-if [[ ! -d "$MODELS_DIR/llama-3.2-3b-instruct-4bit" ]]; then
-    info "Downloading Llama-3.2-3B-Instruct-4bit (~1.8GB)..."
+# download qwen 3b
+if [[ ! -d "$MODELS_DIR/qwen2.5-3b-instruct-4bit" ]]; then
+    info "Downloading Qwen2.5-3B-Instruct-4bit (~1.6GB)..."
     git lfs install
-    git clone "https://huggingface.co/mlx-community/Llama-3.2-3B-Instruct-4bit" \
-        "$MODELS_DIR/llama-3.2-3b-instruct-4bit"
-    rm -f "$MODELS_DIR/llama-3.2-3b-instruct-4bit/model.safetensors.index.json"
+    git clone "https://huggingface.co/mlx-community/Qwen2.5-3B-Instruct-4bit" \
+        "$MODELS_DIR/qwen2.5-3b-instruct-4bit"
     info "LLM model downloaded"
 else
     info "LLM model already exists"
@@ -155,7 +154,7 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
 {
     "whisper_model_path": "~/.archon/models/ggml-base.en.bin",
     "vad_model_path": "~/.archon/models/silero_vad.onnx",
-    "llm_model_path": "~/.archon/models/llama-3.2-3b-instruct-4bit",
+    "llm_model_path": "~/.archon/models/qwen2.5-3b-instruct-4bit",
     "wake_word": null,
     "always_listening": true,
     "action_delay_ms": 100,

@@ -1,6 +1,6 @@
 import Foundation
 
-class AppleScriptBridge {
+class AppleScriptBridge: @unchecked Sendable {
 
     @discardableResult
     static func run(_ source: String) throws -> String? {

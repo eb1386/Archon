@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-class AudioListener {
+class AudioListener: @unchecked Sendable {
     private let audioEngine = AVAudioEngine()
     private let vad: VAD
     private let transcriber: Transcriber

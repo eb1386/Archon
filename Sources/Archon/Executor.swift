@@ -2,7 +2,7 @@ import ApplicationServices
 import AppKit
 import Foundation
 
-class Executor {
+class Executor: @unchecked Sendable {
 
     private let keyCodes: [String: Int] = [
         "return": 36, "enter": 36, "tab": 48, "space": 49,
