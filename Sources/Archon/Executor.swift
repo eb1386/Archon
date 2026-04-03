@@ -102,6 +102,7 @@ class Executor {
         down?.flags = flags
         up?.flags = flags
         down?.post(tap: .cghidEventTap)
+        usleep(10_000) // 10ms — some apps miss the keyup if it's instant
         up?.post(tap: .cghidEventTap)
     }
 
