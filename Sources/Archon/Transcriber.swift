@@ -31,7 +31,7 @@ class Transcriber {
 
         let t0 = CFAbsoluteTimeGetCurrent()
 
-        var p = whisper_full_default_params(WHISPER_SAMPLING_GREEDY)
+        var p = whisper_full_default_params(whisper_sampling_strategy(rawValue: 0))
         p.n_threads = Int32(min(4, ProcessInfo.processInfo.activeProcessorCount))
         p.single_segment = true
         p.no_timestamps = true

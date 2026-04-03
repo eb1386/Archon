@@ -180,7 +180,7 @@ class Executor {
         default:      dy = Int32(-step)
         }
         if let ev = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2, wheel1: dy, wheel2: dx, wheel3: 0) {
-            ev.post(tap: .cgSessionEventTap)
+            ev.post(tap: .cghidEventTap)
         }
     }
 
