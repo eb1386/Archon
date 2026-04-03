@@ -45,7 +45,7 @@ struct Config: Codable {
         Config(
             whisperModelPath: "~/.archon/models/ggml-base.en.bin",
             vadModelPath: "~/.archon/models/silero_vad.onnx",
-            llmModelPath: "~/.archon/models/qwen2.5-3b-instruct-4bit",
+            llmModelPath: "~/.archon/models/llama-3.2-3b-instruct-4bit",
             wakeWord: nil,
             alwaysListening: true,
             actionDelayMs: 100,

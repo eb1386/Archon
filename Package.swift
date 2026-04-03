@@ -1,12 +1,13 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 5.9
 import PackageDescription
 
 let package = Package(
     name: "Archon",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/ml-explore/mlx-swift", exact: "0.25.5"),
-        .package(url: "https://github.com/ml-explore/mlx-swift-examples", exact: "2.25.7"),
+        .package(url: "https://github.com/ml-explore/mlx-swift", exact: "0.21.2"),
+        .package(url: "https://github.com/ml-explore/mlx-swift-examples", exact: "2.21.2"),
+        .package(url: "https://github.com/huggingface/swift-transformers", exact: "0.1.20"),
         .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.16.0"),
     ],
     targets: [

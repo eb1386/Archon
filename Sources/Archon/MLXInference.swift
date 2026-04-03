@@ -38,7 +38,7 @@ class MLXInference {
             throw ArchonError.modelNotLoaded
         }
 
-        let messages: [[String: Any]] = [
+        let messages: [[String: String]] = [
             ["role": "system", "content": systemPrompt],
             ["role": "user", "content": userPrompt]
         ]
