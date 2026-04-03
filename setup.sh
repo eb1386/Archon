@@ -98,6 +98,15 @@ if [[ ! -f "$WHISPER_LIB_DIR/lib/libwhisper.a" ]]; then
     # grab ggml headers too if they exist
     find . -maxdepth 3 -name "ggml*.h" -path "*/include/*" -exec cp {} "$WHISPER_LIB_DIR/include/" \; 2>/dev/null || true
 
+    # sanity check
+    if [[ ! -f "$WHISPER_LIB_DIR/include/whisper.h" ]]; then
+        warn "whisper.h not found in expected locations, trying root"
+        find . -name "whisper.h" -exec cp {} "$WHISPER_LIB_DIR/include/" \; 2>/dev/null
+    fi
+    if [[ ! -f "$WHISPER_LIB_DIR/include/whisper.h" ]]; then
+        fail "could not find whisper.h anywhere in the build tree"
+    fi
+
     cd "$SCRIPT_DIR"
     rm -rf "$WHISPER_TMP"
     info "whisper.cpp built and installed"
