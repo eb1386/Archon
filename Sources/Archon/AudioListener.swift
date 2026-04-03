@@ -17,10 +17,14 @@ class AudioListener {
 
     var onTranscription: ((String) -> Void)?
 
+    private let tapBufferSize: AVAudioFrameCount = 1024
+
     init(vad: VAD, transcriber: Transcriber, silenceDurationMs: Int = 500) {
         self.vad = vad
         self.transcriber = transcriber
-        self.silentChunksNeeded = (silenceDurationMs * 16) / 512
+        // how many chunks of silence before we cut off
+        // at 16kHz with 1024-sample tap, each chunk is ~64ms
+        self.silentChunksNeeded = max(1, silenceDurationMs / 64)
     }
 
     func start() {
@@ -40,7 +44,7 @@ class AudioListener {
             return
         }
 
-        node.installTap(onBus: 0, bufferSize: 1024, format: hwFmt) { [weak self] buf, _ in
+        node.installTap(onBus: 0, bufferSize: tapBufferSize, format: hwFmt) { [weak self] buf, _ in
             self?.handleAudio(buf, converter: conv, fmt: outFmt)
         }
 
