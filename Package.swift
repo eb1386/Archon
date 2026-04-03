@@ -27,12 +27,21 @@ let package = Package(
             ],
             path: "Sources/Archon",
             linkerSettings: [
-                .linkedLibrary("whisper"),
                 .unsafeFlags(["-L", "Libraries/whisper/lib"]),
+                .linkedLibrary("whisper"),
+                .linkedLibrary("ggml"),
+                .linkedLibrary("ggml-base"),
+                .linkedLibrary("ggml-cpu"),
+                .linkedLibrary("ggml-metal"),
+                .linkedLibrary("ggml-blas"),
                 .linkedFramework("Accelerate"),
                 .linkedFramework("CoreML"),
+                .linkedFramework("Metal"),
+                .linkedFramework("MetalKit"),
+                .linkedFramework("Foundation"),
                 .linkedFramework("AVFoundation"),
                 .linkedFramework("ApplicationServices"),
+                .unsafeFlags(["-lstdc++"]),
             ]
         ),
     ]

@@ -81,12 +81,12 @@ if [[ ! -f "$WHISPER_LIB_DIR/lib/libwhisper.a" ]]; then
         -DWHISPER_BUILD_TESTS=OFF
     cmake --build build --config Release -j$(sysctl -n hw.ncpu)
 
-    # the lib can end up in different places depending on version
-    FOUND_LIB=$(find build -name "libwhisper.a" -print -quit)
-    if [[ -z "$FOUND_LIB" ]]; then
+    # copy all static libs — whisper depends on ggml libs
+    find build -name "lib*.a" -exec cp {} "$WHISPER_LIB_DIR/lib/" \;
+    if [[ ! -f "$WHISPER_LIB_DIR/lib/libwhisper.a" ]]; then
         fail "whisper.cpp build succeeded but can't find libwhisper.a"
     fi
-    cp "$FOUND_LIB" "$WHISPER_LIB_DIR/lib/"
+    info "copied libs: $(ls "$WHISPER_LIB_DIR/lib/")"
 
     # headers — try common locations
     for hdir in include ggml/include; do
